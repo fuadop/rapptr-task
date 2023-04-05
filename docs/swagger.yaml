@@ -1,0 +1,403 @@
+basePath: /api/v1
+definitions:
+  types.ApiResponse-any:
+    properties:
+      data: {}
+      error:
+        type: string
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
+  types.ApiResponse-array_types_Todo:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/types.Todo'
+        type: array
+      error:
+        type: string
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
+  types.ApiResponse-types_DocAddTodoRes:
+    properties:
+      data:
+        $ref: '#/definitions/types.DocAddTodoRes'
+      error:
+        type: string
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
+  types.ApiResponse-types_DocDeleteTodoRes:
+    properties:
+      data:
+        $ref: '#/definitions/types.DocDeleteTodoRes'
+      error:
+        type: string
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
+  types.ApiResponse-types_DocEditTodoRes:
+    properties:
+      data:
+        $ref: '#/definitions/types.DocEditTodoRes'
+      error:
+        type: string
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
+  types.ApiResponse-types_DocLoginRes:
+    properties:
+      data:
+        $ref: '#/definitions/types.DocLoginRes'
+      error:
+        type: string
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
+  types.ApiResponse-types_Todo:
+    properties:
+      data:
+        $ref: '#/definitions/types.Todo'
+      error:
+        type: string
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
+  types.ApiResponse-types_User:
+    properties:
+      data:
+        $ref: '#/definitions/types.User'
+      error:
+        type: string
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
+  types.DocAddTodo:
+    properties:
+      text:
+        type: string
+    type: object
+  types.DocAddTodoRes:
+    properties:
+      created:
+        type: boolean
+    type: object
+  types.DocDeleteTodoRes:
+    properties:
+      deleted:
+        type: boolean
+    type: object
+  types.DocEditTodoRes:
+    properties:
+      editted:
+        type: boolean
+    type: object
+  types.DocLoginRes:
+    properties:
+      token:
+        type: string
+    type: object
+  types.DocRegisterUser:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  types.Todo:
+    properties:
+      createdAt:
+        type: string
+      id:
+        type: string
+      text:
+        minLength: 1
+        type: string
+      updatedAt:
+        type: string
+    required:
+    - text
+    type: object
+  types.User:
+    properties:
+      createdAt:
+        type: string
+      id:
+        type: string
+      password:
+        minLength: 8
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
+info:
+  contact:
+    email: fuad@nodelayer.xyz
+    name: Fuad Olatunji
+    url: https://nodelayer.xyz
+  description: Todo list API
+  title: Todo List API
+  version: "1.0"
+paths:
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Login a user
+      parameters:
+      - description: Request body
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/types.DocRegisterUser'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/types.ApiResponse-types_DocLoginRes'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/types.ApiResponse-any'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/types.ApiResponse-any'
+      summary: Login a user
+      tags:
+      - users
+  /auth/me:
+    get:
+      description: Get the current logged in user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/types.ApiResponse-types_User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/types.ApiResponse-any'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/types.ApiResponse-any'
+      security:
+      - BearerAuth: []
+      summary: Get the current logged in user
+      tags:
+      - users
+  /auth/register:
+    post:
+      consumes:
+      - application/json
+      description: Register a user
+      parameters:
+      - description: Request body
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/types.DocRegisterUser'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/types.ApiResponse-any'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/types.ApiResponse-any'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/types.ApiResponse-any'
+      summary: Register a user
+      tags:
+      - users
+  /todos:
+    get:
+      description: Get all todos of a user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/types.ApiResponse-array_types_Todo'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/types.ApiResponse-any'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/types.ApiResponse-any'
+      security:
+      - BearerAuth: []
+      summary: Get all todos
+      tags:
+      - todos
+    post:
+      consumes:
+      - application/json
+      description: Add a todo
+      parameters:
+      - description: Request body
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/types.DocAddTodo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/types.ApiResponse-types_DocAddTodoRes'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/types.ApiResponse-any'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/types.ApiResponse-any'
+      security:
+      - BearerAuth: []
+      summary: Add a todo
+      tags:
+      - todos
+  /todos/{id}:
+    delete:
+      description: Delete a todo.
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/types.ApiResponse-types_DocDeleteTodoRes'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/types.ApiResponse-any'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/types.ApiResponse-any'
+      security:
+      - BearerAuth: []
+      summary: Delete a todo
+      tags:
+      - todos
+    get:
+      description: Get a todo
+      parameters:
+      - description: todo id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/types.ApiResponse-types_Todo'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/types.ApiResponse-any'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/types.ApiResponse-any'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/types.ApiResponse-any'
+      security:
+      - BearerAuth: []
+      summary: Get a todo
+      tags:
+      - todos
+    patch:
+      description: Change a todo
+      parameters:
+      - description: todo id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Request body
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/types.DocAddTodo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/types.ApiResponse-types_DocEditTodoRes'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/types.ApiResponse-any'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/types.ApiResponse-any'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/types.ApiResponse-any'
+      security:
+      - BearerAuth: []
+      summary: Change a todo
+      tags:
+      - todos
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
